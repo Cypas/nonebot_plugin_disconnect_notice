@@ -1,8 +1,7 @@
-import smtplib
-from email.mime import text
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from email.header import Header
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import aiosmtplib
 
 from nonebot import logger, Bot
 from .config import plugin_config
@@ -17,13 +16,13 @@ mail_config: MailConfig = MailConfig(
 )
 
 
-def send_notice(bot: Bot):
+async def send_notice(bot: Bot):
     """整合发送通知消息"""
     bot_id = get_bot_id(bot)
-    send_mail(bot_id)
+    await send_mail(bot_id)
 
 
-def send_mail(bot_id: str, test: bool = False):
+async def send_mail(bot_id: str, test: bool = False):
     """发送邮件通知"""
     # 邮箱凭据
     global mail_config
@@ -46,14 +45,13 @@ def send_mail(bot_id: str, test: bool = False):
     message["To"] = mail_config.notice_email
     message.attach(MIMEText(content))
     # 连接SMTP服务器并发送邮件
+    use_tls = False
     if mail_config.port == 465:
-        server = smtplib.SMTP_SSL(mail_config.server, mail_config.port)
-    else:
-        # 25或其他
-        server = smtplib.SMTP(mail_config.server, mail_config.port)
+        use_tls = True
     try:
-        server.login(mail_config.user, mail_config.password)
-        server.sendmail(mail_config.user, mail_config.notice_email, message.as_string())
+        async with aiosmtplib.SMTP(hostname=mail_config.server, port=mail_config.port, use_tls=use_tls) as smtp:
+            await smtp.login(mail_config.user,mail_config.password)
+            await smtp.send_message(message)
     except Exception as e:
         logger.error(f"邮件发送失败，错误信息如下{e}")
         return e
