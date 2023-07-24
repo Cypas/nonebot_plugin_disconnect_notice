@@ -3,6 +3,8 @@ from email.mime import text
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.header import Header
+from typing import Union
+
 # onebot11 协议
 from nonebot.adapters.onebot.v11 import Bot as V11Bot
 
@@ -19,13 +21,13 @@ mail_config: MailConfig = MailConfig(
 )
 
 
-def send_notice(bot: V11Bot):
+def send_notice(bot: Union[V11Bot]):
     """整合发送通知消息"""
     bot_id = get_bot_id(bot)
     send_mail(bot_id)
 
 
-def send_mail(bot_id: str):
+def send_mail(bot_id: str, test: bool = False):
     """发送邮件通知"""
     # 邮箱凭据
     global mail_config
@@ -36,6 +38,9 @@ def send_mail(bot_id: str):
     # 邮件正文
     subject = f"你的QQbot掉线了"
     content = f"你的QQbot账号: {bot_id} 掉线了，可能是被风控了，赶快去看看吧"
+    if test:
+        subject = f"掉线通知测试"
+        content = f"这是一封掉线通知测试邮件，你bot并没有掉线"
 
     # 构造邮件内容
     message = MIMEMultipart("alternative")
@@ -58,7 +63,7 @@ def send_mail(bot_id: str):
     logger.info("通知邮件发送成功!")
 
 
-def get_bot_id(bot: V11Bot) -> str:
+def get_bot_id(bot: Union[V11Bot]) -> str:
     """获取bot_id"""
     bot_id = bot.self_id
     return bot_id

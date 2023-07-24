@@ -70,6 +70,7 @@ _✨ QQbot断连时的通知插件 ✨_
 
 <details>
 <summary>示例配置</summary>
+  
 ```env
 # disconnect_notice示例配置
 disconnect_notice_smtp_user = "114514@yeah.net" #邮箱账号
@@ -78,12 +79,19 @@ disconnect_notice_smtp_server = "smtp.yeah.net" #邮箱服务器地址
 disconnect_notice_smtp_port = 465 #邮箱端口号
 disconnect_notice_notice_email = "114514@qq.com" #收件人邮箱
 ```
+
 </details>
 
 ## 🎉 使用
+### 指令表
+| 指令 | 权限 | 需要@ | 范围  |           说明            |
+|:-----:|:----:|:----:|:---:|:-----------------------:|
+| 断连通知测试 | 主人 | 否 | 私聊/群聊 | 主动触发掉线通知测试，用来测试通知是否正常可用 |
 ### 效果图
 <details>
 <summary>邮件通知</summary>
+
+![mail.png](images/mail.png)
 
 </details>
 
