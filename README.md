@@ -57,9 +57,6 @@ _✨ QQbot断连时的通知插件 ✨_
 </details>
 
 
-
-安装完成后，需要以onebot协议下超级管理员用户对机器人发送`更新武器数据`来更新数据库内的武器数据，不然`随机武器`功能无法使用
-
 ## ⚙️ 配置
 运行插件前，需要在 nonebot2 项目的`.env.prod`文件中添加下表中的代理地址配置项
 
@@ -72,19 +69,21 @@ _✨ QQbot断连时的通知插件 ✨_
 | disconnect_notice_notice_email | 是 | str | ""  | 收件人邮箱，填写自己邮箱即可 |
 
 <details>
+<summary>示例配置</summary>
+```env
 # disconnect_notice示例配置
 disconnect_notice_smtp_user = "114514@yeah.net" #邮箱账号
 disconnect_notice_smtp_password = "114514" #邮箱密码
 disconnect_notice_smtp_server = "smtp.yeah.net" #邮箱服务器地址
 disconnect_notice_smtp_port = 465 #邮箱端口号
 disconnect_notice_notice_email = "114514@qq.com" #收件人邮箱
+```
 </details>
 
 ## 🎉 使用
-
 ### 效果图
 <details>
-
+<summary>邮件通知</summary>
 
 </details>
 

@@ -22,11 +22,7 @@ mail_config: MailConfig = MailConfig(
 def send_notice(bot: V11Bot):
     """整合发送通知消息"""
     bot_id = get_bot_id(bot)
-    if not send_mail(bot):
-        # 缺少参数
-        super_user: str = plugin_config.SUPERUSERS[0]
-        if super_user:
-            bot.send_private_msg(super_user, "")
+    send_mail(bot_id)
 
 
 def send_mail(bot_id: str):
@@ -44,18 +40,18 @@ def send_mail(bot_id: str):
     # 构造邮件内容
     message = MIMEMultipart("alternative")
     message["Subject"] = Header(subject, 'utf-8')
-    message["From"] = smtp_user
-    message["To"] = notice_email
+    message["From"] = mail_config.user
+    message["To"] = mail_config.notice_email
     message.attach(MIMEText(content))
     # 连接SMTP服务器并发送邮件
-    if smtp_port == 465:
-        server = smtplib.SMTP_SSL(smtp_server, smtp_port)
+    if mail_config.smtp_port == 465:
+        server = smtplib.SMTP_SSL(mail_config.server, mail_config.port)
     else:
         # 25或其他
-        server = smtplib.SMTP(smtp_server, smtp_port)
+        server = smtplib.SMTP(mail_config.server, mail_config.port)
     try:
-        server.login(smtp_user, smtp_password)
-        server.sendmail(smtp_user, notice_email, message.as_string())
+        server.login(mail_config.user, mail_config.password)
+        server.sendmail(mail_config.user, mail_config.notice_email, message.as_string())
     except Exception as e:
         logger.error(f"邮件发送失败，错误信息如下{e}")
         return

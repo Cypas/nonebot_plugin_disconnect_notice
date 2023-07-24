@@ -7,14 +7,13 @@ from nonebot.adapters.onebot.v11 import Bot as V11Bot
 from .config import driver, plugin_config
 from .utils import send_notice, mail_config
 
-# zhenxunbot框架当前使用的是2.0.0rc1版本nb2，对以下插件元信息缺少参数，需要删除usage后面的字段，才能正常加载
 __plugin_meta__ = PluginMetadata(
     name="QQbot断连通知",
     description="QQbot断连时的通知插件",
     usage="",
     type="application",
     # 发布必填，当前有效类型有：`library`（为其他插件编写提供功能），`application`（向机器人用户提供功能）。
-    homepage="https://github.com/Skyminers/Bot-Splatoon3",
+    homepage="https://github.com/Cypas/nonebot_plugin_disconnect_notice",
     # 发布必填。
     supported_adapters={"~onebot.v11"},
 )
@@ -30,7 +29,10 @@ async def disconnect(bot: V11Bot):
 async def startup(bot: V11Bot):
     """插件载入时检测配置完整性"""
     if not mail_config.check_params():
-        # 缺少参数,通知主人
+        # 缺少参数,私聊通知主人
         super_user: str = plugin_config.SUPERUSERS[0]
         if super_user:
-            await bot.send_private_msg(user_id=int(super_user), message="缺少mail配置项，请按照")
+            await bot.send_private_msg(user_id=int(super_user), message="缺少mail配置项，请按照"
+                                                                        "https://github.com"
+                                                                        "/Cypasnonebot_plugin_disconnect_notice#%EF%B8%8F-%E9%85%8D%E7%BD%AE"
+                                                                        "\n添加配置项后，再载入插件")
