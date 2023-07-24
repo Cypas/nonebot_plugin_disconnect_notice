@@ -92,7 +92,7 @@ _✨ bot断连时的通知插件 ✨_
 | 网易yeah邮箱 |  smtp.yeah.net  |    465    |
 |  阿里云邮箱   | smtp.aliyun.com |    465    |
 | 网易163邮箱  |  smtp.163.com   |    465    |
-| 移动139邮箱  |  SMTP.139.com   |    465    |
+| 移动139邮箱  |  smtp.139.com   |    465    |
 
 
 </details>
