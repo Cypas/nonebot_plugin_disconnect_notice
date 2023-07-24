@@ -50,7 +50,7 @@ async def send_mail(bot_id: str, test: bool = False):
         use_tls = True
     try:
         async with aiosmtplib.SMTP(hostname=mail_config.server, port=mail_config.port, use_tls=use_tls) as smtp:
-            await smtp.login(mail_config.user,mail_config.password)
+            await smtp.login(mail_config.user, mail_config.password)
             await smtp.send_message(message)
     except Exception as e:
         logger.error(f"邮件发送失败，错误信息如下{e}")
