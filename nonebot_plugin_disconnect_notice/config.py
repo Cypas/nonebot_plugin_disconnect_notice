@@ -11,6 +11,7 @@ class Config(BaseModel):
     disconnect_notice_smtp_server = ""
     disconnect_notice_smtp_port = 465
     disconnect_notice_notice_email = ""
+    disconnect_notice_dev_mode = False
 
 
 driver = get_driver()

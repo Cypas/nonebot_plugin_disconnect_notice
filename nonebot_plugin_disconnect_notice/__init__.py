@@ -41,12 +41,14 @@ async def _(matcher: Matcher):
 @driver.on_bot_disconnect
 async def disconnect(bot: Union[V11Bot]):
     """bot断连触发器"""
-    send_notice(bot)
+    # 开发者模式下不生效
+    if not plugin_config.disconnect_notice_dev_mode:
+        send_notice(bot)
 
 
 @driver.on_bot_connect
 async def connect(bot: V11Bot):
-    """插件载入时检测配置完整性"""
+    """bot接入时检测配置完整性"""
     if not mail_config.check_params():
         # 缺少参数,私聊通知主人
         super_user: str = list(global_config.superusers)[0]
