@@ -60,7 +60,43 @@ _✨ bot断连时的通知插件 ✨_
 
 
 ## ⚙️ 配置
-运行插件前，需要在 nonebot2 项目的`.env.prod`文件中添加下表中的代理地址配置项
+运行插件前，需要在 nonebot2 项目的`.env.prod`文件中添加下表中的smtp配置项
+<details>
+<summary>如果没有开启smtp看这里</summary>
+
+- 以qq邮箱为例，其他邮箱的开启smtp方式是类似的
+
+1.点击qq邮箱的设置
+![img.png](images/img.png)
+
+2.点击账户
+![img_1.png](images/img_1.png)
+
+3.点击管理服务，如果没有开启，这里可能显示的是`开启服务`
+![img_2.png](images/img_2.png)
+
+4.点击`生成授权码`
+![img_3.png](images/img_3.png)
+
+5.按照要求用密保手机号发送短信验证
+![img_4.png](images/img_4.png)
+
+6.复制得到的这个授权码
+![img_5.png](images/img_5.png)
+
+7.得到的这个`授权码`就相当于邮箱密码，邮箱账号就是qq邮箱，其他的一些常见邮箱的smtp_server和smtp_port配置参数参考下表
+
+|   邮箱名    |   smtp_server   | smtp_port |   
+|:--------:|:---------------:|:---------:|
+|   qq邮箱   |   smtp.qq.com   |    465    |   
+| 网易yeah邮箱 |  smtp.yeah.net  |    465    |
+|  阿里云邮箱   | smtp.aliyun.com |    465    |
+| 网易163邮箱  |  smtp.163.com   |    465    |
+| 移动139邮箱  |  SMTP.139.com   |    465    |
+
+
+</details>
+
 
 | 配置项 | 必填 | 值类型 | 默认值 | 说明 |
 |:------:|:----:|:---:|:---:|:--:|
