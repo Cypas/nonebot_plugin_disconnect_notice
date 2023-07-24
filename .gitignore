@@ -1,0 +1,8 @@
+/output/*
+/.idea
+/__init__.py
+/test_json/
+/build/
+/dist/
+/setup.py
+MANIFEST.in
