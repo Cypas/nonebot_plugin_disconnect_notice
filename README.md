@@ -69,6 +69,7 @@ _✨ QQbot断连时的通知插件 ✨_
 | disconnect_notice_smtp_server | 是 | str | ""  | 邮箱服务器地址,如 smtp.yeah.net |
 | disconnect_notice_smtp_port | 是 | int | 465  | 邮箱端口号，ssl模式时为465 |
 | disconnect_notice_notice_email | 是 | str | ""  | 收件人邮箱，填写自己邮箱即可 |
+| disconnect_notice_dev_mode | 否 | bool | False  | 开发者模式，该模式下QQbot断开连接不会触发通知消息，避免本地测试插件时不断重载而导致的大量掉线通知 |
 
 <details>
 <summary>示例配置</summary>
