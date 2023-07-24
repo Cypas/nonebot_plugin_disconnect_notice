@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot-plugin-disconnect-notice"
-version = "0.1.0"
+version = "0.1.1"
 description = "QQbot断连时的通知插件"
 authors = ["cypas <ayano05@outlook.com>"]
 readme = "README.md"
