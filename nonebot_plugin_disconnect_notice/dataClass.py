@@ -17,3 +17,12 @@ class MailConfig:
             return True
         else:
             return False
+
+
+class BotParams:
+    def __init__(self,
+                 adapter_name: str,
+                 bot_id: str,
+                 ):
+        self.adapter_name = adapter_name
+        self.bot_id = bot_id
