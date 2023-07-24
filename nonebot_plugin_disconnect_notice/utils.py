@@ -33,8 +33,9 @@ def send_mail(bot_id: str, test: bool = False):
     global mail_config
     # 参数校验
     if not mail_config.check_params():
-        logger.error("邮件通知缺少配置参数，无法进行通知")
-        return
+        error = "邮件通知缺少配置参数，无法进行通知"
+        logger.error(error)
+        return error
     # 邮件正文
     subject = f"你的QQbot掉线了"
     content = f"你的QQbot账号: {bot_id} 掉线了，可能是被风控了，赶快去看看吧"
@@ -49,7 +50,7 @@ def send_mail(bot_id: str, test: bool = False):
     message["To"] = mail_config.notice_email
     message.attach(MIMEText(content))
     # 连接SMTP服务器并发送邮件
-    if mail_config.smtp_port == 465:
+    if mail_config.port == 465:
         server = smtplib.SMTP_SSL(mail_config.server, mail_config.port)
     else:
         # 25或其他
@@ -59,8 +60,9 @@ def send_mail(bot_id: str, test: bool = False):
         server.sendmail(mail_config.user, mail_config.notice_email, message.as_string())
     except Exception as e:
         logger.error(f"邮件发送失败，错误信息如下{e}")
-        return
+        return e
     logger.info("通知邮件发送成功!")
+    return
 
 
 def get_bot_id(bot: Union[V11Bot]) -> str:

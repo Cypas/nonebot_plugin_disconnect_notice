@@ -1,10 +1,10 @@
 class MailConfig:
     def __init__(self,
-                 user,
-                 password,
-                 server,
-                 port,
-                 notice_email):
+                 user: str,
+                 password: str,
+                 server: str,
+                 port: int,
+                 notice_email: str):
         self.user = user
         self.password = password
         self.server = server
@@ -13,7 +13,7 @@ class MailConfig:
 
     def check_params(self) -> bool:
         """检查参数是否填写完整"""
-        if not (self.smtp_user or self.smtp_password or self.smtp_server or self.smtp_port or self.notice_email):
-            return False
-        else:
+        if self.user and self.password and self.server and self.port and self.notice_email:
             return True
+        else:
+            return False
