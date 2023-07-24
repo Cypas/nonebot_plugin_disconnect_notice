@@ -8,7 +8,7 @@
 
 # nonebot-plugin-disconnect-notice
 
-_✨ QQbot断连时的通知插件 ✨_
+_✨ bot断连时的通知插件 ✨_
 
 
 <a href="./LICENSE">
@@ -24,9 +24,9 @@ _✨ QQbot断连时的通知插件 ✨_
 
 ## 📖 介绍
 
-- 可以在qqbot断开与nonebot的连接时向主人发送例如邮件的通知，用来通知主人QQbot可能被风控掉线
-- 目前支持onebotv11协议，通知方式支持邮件通知
-- 如果有其他协议或通知方式的需求，欢迎提issus或pr
+- 可以在bot断开与nonebot的连接时向主人发送例如邮件的通知，用来通知主人bot可能被风控掉线
+- 目前支持全部适配器协议，通知方式支持邮件通知
+- 如果有其他通知方式的需求，欢迎提issus或pr
 
 >断连事件是通过判断nb与bot端的ws连接状态来实现的，当主动停止nonebot框架时，会先断开ws连接，随后再退出,这意味着主动停止nonebot框架时，也会收到插件发送的离线通知消息，这个无法避免，属于正常情况
 
@@ -69,7 +69,7 @@ _✨ QQbot断连时的通知插件 ✨_
 | disconnect_notice_smtp_server | 是 | str | ""  | 邮箱服务器地址,如 smtp.yeah.net |
 | disconnect_notice_smtp_port | 是 | int | 465  | 邮箱端口号，ssl模式时为465 |
 | disconnect_notice_notice_email | 是 | str | ""  | 收件人邮箱，填写自己邮箱即可 |
-| disconnect_notice_dev_mode | 否 | bool | False  | 开发者模式，该模式下QQbot断开连接不会触发通知消息，避免本地测试插件时不断重载而导致的大量掉线通知 |
+| disconnect_notice_dev_mode | 否 | bool | False  | 开发者模式，该模式下bot断开连接不会触发通知消息，避免本地测试插件时不断重载而导致的大量掉线通知 |
 
 <details>
 <summary>示例配置</summary>

@@ -3,12 +3,8 @@ from email.mime import text
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.header import Header
-from typing import Union
 
-# onebot11 协议
-from nonebot.adapters.onebot.v11 import Bot as V11Bot
-
-from nonebot import logger
+from nonebot import logger, Bot
 from .config import plugin_config
 from .dataClass import MailConfig
 
@@ -21,7 +17,7 @@ mail_config: MailConfig = MailConfig(
 )
 
 
-def send_notice(bot: Union[V11Bot]):
+def send_notice(bot: Bot):
     """整合发送通知消息"""
     bot_id = get_bot_id(bot)
     send_mail(bot_id)
@@ -37,8 +33,8 @@ def send_mail(bot_id: str, test: bool = False):
         logger.error(error)
         return error
     # 邮件正文
-    subject = f"你的QQbot掉线了"
-    content = f"你的QQbot账号: {bot_id} 掉线了，可能是被风控了，赶快去看看吧"
+    subject = f"你的bot掉线了"
+    content = f"你的bot账号: {bot_id} 掉线了，可能是被风控了，赶快去看看吧"
     if test:
         subject = f"掉线通知测试"
         content = f"这是一封掉线通知测试邮件，你bot并没有掉线"
@@ -65,7 +61,7 @@ def send_mail(bot_id: str, test: bool = False):
     return
 
 
-def get_bot_id(bot: Union[V11Bot]) -> str:
+def get_bot_id(bot) -> str:
     """获取bot_id"""
     bot_id = bot.self_id
     return bot_id
