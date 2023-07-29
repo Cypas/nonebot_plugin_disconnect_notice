@@ -135,3 +135,8 @@ disconnect_notice_notice_email = "114514@qq.com" #收件人邮箱
 </details>
 
 ## ✨喜欢的话就点个star✨吧，球球了QAQ
+
+
+## ⏳ Star 趋势
+
+[![Stargazers over time](https://starchart.cc/Cypas/nonebot_plugin_disconnect_notice.svg)](https://starchart.cc/Cypas/nonebot_plugin_disconnect_notice)
