@@ -101,7 +101,7 @@ _✨ bot断连时的通知插件 ✨_
 | 配置项 | 必填 | 值类型 | 默认值 | 说明 |
 |:------:|:----:|:---:|:---:|:--:|
 | disconnect_notice_smtp_user | 是 | str | ""  | 邮箱账号,如 114514@yeah.net |
-| disconnect_notice_smtp_password | 是 | str | ""  | 邮箱密码,如 114514 |
+| disconnect_notice_smtp_password | 是 | str | ""  | 邮箱密码或授权码,如 114514 |
 | disconnect_notice_smtp_server | 是 | str | ""  | 邮箱服务器地址,如 smtp.yeah.net |
 | disconnect_notice_smtp_port | 是 | int | 465  | 邮箱端口号，ssl模式时为465 |
 | disconnect_notice_notice_email | 是 | str | ""  | 收件人邮箱，填写自己邮箱即可 |
@@ -117,6 +117,7 @@ disconnect_notice_smtp_password = "114514" #邮箱密码
 disconnect_notice_smtp_server = "smtp.yeah.net" #邮箱服务器地址
 disconnect_notice_smtp_port = 465 #邮箱端口号
 disconnect_notice_notice_email = "114514@qq.com" #收件人邮箱
+disconnect_notice_dev_mode = False #开发者模式，该模式下bot断连不会触发通知消息，避免本地测试插件时不断重载而导致的大量掉线通知
 ```
 
 </details>

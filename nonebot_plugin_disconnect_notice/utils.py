@@ -35,7 +35,7 @@ async def send_mail(bot_params: BotParams, test: bool = False):
     content = f"你的 {bot_params.adapter_name} 适配器的bot账号: {bot_params.bot_id} 掉线了，可能是被风控了，赶快去看看吧"
     if test:
         subject = f"掉线通知测试"
-        content = f"这是一封掉线通知测试邮件，你bot并没有掉线"
+        content = f"这是一封掉线通知测试邮件，你的bot并没有掉线"
 
     # 构造邮件内容
     message = MIMEMultipart("alternative")
