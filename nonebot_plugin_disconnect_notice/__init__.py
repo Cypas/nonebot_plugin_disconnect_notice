@@ -32,7 +32,7 @@ __plugin_meta__ = PluginMetadata(
     supported_adapters=None,
 )
 
-notice_test = on_command("断连通知测试", permission=SUPERUSER)
+notice_test = on_command("断连通知测试", priority=8, block=True, permission=SUPERUSER)
 
 
 @notice_test.handle()
