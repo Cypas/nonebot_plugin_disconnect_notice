@@ -1,15 +1,21 @@
+from datetime import datetime as dt, timedelta
+
 from nonebot.internal.matcher import Matcher
 from nonebot.plugin import PluginMetadata
-from nonebot import Bot
+from nonebot import Bot, require, get_bots
+from nonebot import logger
 
 # onebot11 协议
 from nonebot.adapters.onebot.v11 import Bot as V11Bot
 from nonebot import on_command
 from nonebot.permission import SUPERUSER
 
-from .config import driver, plugin_config, global_config
+from .config import driver, plugin_config, global_config, Config
 from .dataClass import BotParams
 from .utils import send_notice, mail_config, send_mail
+
+require("nonebot_plugin_apscheduler")
+from nonebot_plugin_apscheduler import scheduler
 
 __plugin_meta__ = PluginMetadata(
     name="bot断连通知",
@@ -22,6 +28,7 @@ __plugin_meta__ = PluginMetadata(
     # 发布必填，当前有效类型有：`library`（为其他插件编写提供功能），`application`（向机器人用户提供功能）。
     homepage="https://github.com/Cypas/nonebot_plugin_disconnect_notice",
     # 发布必填。
+    config=Config,
     supported_adapters=None,
 )
 
@@ -47,11 +54,34 @@ async def disconnect(bot: Bot):
     """bot断连触发器"""
     # 开发者模式下不生效
     if not plugin_config.disconnect_notice_dev_mode:
-        bot_params = BotParams(
-            adapter_name=bot.adapter.get_name(),
-            bot_id=bot.self_id
+        platform = bot.adapter.get_name()
+        bot_id = bot.self_id
+        job_id = f"disconnect_notice_{platform}_{bot_id}"
+        if scheduler.get_job(job_id):
+            scheduler.remove_job(job_id)
+        # 计算运行时间
+        run_time = dt.now() + timedelta(seconds=plugin_config.disconnect_notice_max_grace_time)
+
+        scheduler.add_job(
+            id=job_id, func=cron_send_notice, args=[platform, bot_id],
+            misfire_grace_time=60, coalesce=True, max_instances=1, trigger='date', run_date=run_time
         )
+
+
+async def cron_send_notice(platform, bot_id):
+    """定时任务：发送通知"""
+    # 重新检查bot是否接入
+    bots = get_bots()
+    bot = bots.get(bot_id)
+    if not bot:
+        bot_params = BotParams(
+            adapter_name=platform,
+            bot_id=bot_id
+        )
+        logger.warning(f"平台:{platform} bot_id:{bot_id} 已掉线，即将进行通知")
         await send_notice(bot_params)
+    else:
+        logger.info(f"平台:{platform} bot_id:{bot_id} 已重连，无需进行通知")
 
 
 @driver.on_bot_connect
