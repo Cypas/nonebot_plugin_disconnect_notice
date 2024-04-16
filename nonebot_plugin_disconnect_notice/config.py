@@ -7,7 +7,7 @@ from pydantic import BaseModel
 # 其他地方出现的类似 from .. import config，均是从 __init__.py 导入的 Config 实例
 class Config(BaseModel):
     disconnect_notice_smtp_user: str | int = ""
-    disconnect_notice_smtp_password: str = ""
+    disconnect_notice_smtp_password: str | int = ""
     disconnect_notice_smtp_server: str | int = ""
     disconnect_notice_smtp_port: int = 465
     disconnect_notice_notice_email: str | int = ""
