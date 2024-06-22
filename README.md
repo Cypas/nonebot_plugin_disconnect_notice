@@ -66,10 +66,12 @@ _✨ bot断连时的通知插件 ✨_
 1. 进入[pushplus官网](https://www.pushplus.plus/)
 2. 点击网页右上角 **登录** 按钮，微信扫码完成登录
 3. 点击公众号提示的该卡片完成登录绑定，提示启用成功即可
+   
    ![1.png](images/pushplus/1.png)
-4. 回到网页端，顶部菜单栏选择**发送消息 - 一对一消息**,然后点击**一键复制**
+5. 回到网页端，顶部菜单栏选择**发送消息 - 一对一消息**,然后点击**一键复制**
+   
    ![2.png](images/pushplus/2.png)
-5. 将token按照下方配置项名 disconnect_notice_pushplus_token = "" 填入`.env.prod` 文件内
+7. 将token按照下方配置项名 disconnect_notice_pushplus_token = "" 填入`.env.prod` 文件内
 
 </details>
 
