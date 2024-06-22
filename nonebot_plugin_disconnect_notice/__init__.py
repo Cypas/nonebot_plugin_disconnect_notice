@@ -12,17 +12,17 @@ from nonebot.permission import SUPERUSER
 
 from .config import driver, plugin_config, global_config, Config
 from .dataClass import BotParams
-from .utils import send_notice, mail_config, send_mail
+from .notice import send_notice, mail_config, send_mail
 
 require("nonebot_plugin_apscheduler")
 from nonebot_plugin_apscheduler import scheduler
 
 __plugin_meta__ = PluginMetadata(
     name="bot断连通知",
-    description="bot断连时的通知插件，当前支持邮件通知",
+    description="bot断连时的通知插件，当前支持邮件通知，pushplus微信公众号通知",
     usage="""
     超级用户指令:
-        断连通知测试:主动触发掉线通知测试
+        掉线测试:主动触发掉线通知测试
     """,
     type="application",
     # 发布必填，当前有效类型有：`library`（为其他插件编写提供功能），`application`（向机器人用户提供功能）。
@@ -32,20 +32,20 @@ __plugin_meta__ = PluginMetadata(
     supported_adapters=None,
 )
 
-notice_test = on_command("断连通知测试", priority=8, block=True, permission=SUPERUSER)
+notice_test = on_command("断连通知测试",aliases={"掉线测试","掉线通知测试"}, priority=8, block=True, permission=SUPERUSER)
 
 
 @notice_test.handle()
 async def _(matcher: Matcher):
     """主动触发掉线通知测试"""
-    msg = "已发送测试邮件，如未收到请检查邮件垃圾箱"
+    msg = "已发送测试通知，如通知渠道包含邮箱，邮件未收到时请检查邮件垃圾箱"
     bot_params = BotParams(
         adapter_name="114514",
         bot_id="114514"
     )
-    res = await send_mail(bot_params, test=True)
+    res = await send_notice(bot_params, test=True)
     if res is not None:
-        msg = f"测试邮件发送失败，请重新检查配置项参数正确性，错误信息为: {res}"
+        msg = f"测试通知发送失败，请重新检查配置项参数正确性，错误信息为: {res}"
     await matcher.finish(msg)
 
 
@@ -53,9 +53,9 @@ async def _(matcher: Matcher):
 async def disconnect(bot: Bot):
     """bot断连触发器"""
     # 开发者模式下不生效
+    platform = bot.adapter.get_name()
+    bot_id = bot.self_id
     if not plugin_config.disconnect_notice_dev_mode:
-        platform = bot.adapter.get_name()
-        bot_id = bot.self_id
         job_id = f"disconnect_notice_{platform}_{bot_id}"
         if scheduler.get_job(job_id):
             scheduler.remove_job(job_id)
@@ -66,7 +66,8 @@ async def disconnect(bot: Bot):
             id=job_id, func=cron_send_notice, args=[platform, bot_id],
             misfire_grace_time=60, coalesce=True, max_instances=1, trigger='date', run_date=run_time
         )
-
+    else:
+        logger.info(f"当前掉线通知已开启dev模式，不会进行任何实际通知")
 
 async def cron_send_notice(platform, bot_id):
     """定时任务：发送通知"""

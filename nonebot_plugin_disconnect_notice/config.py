@@ -6,13 +6,22 @@ from pydantic import BaseModel
 
 # 其他地方出现的类似 from .. import config，均是从 __init__.py 导入的 Config 实例
 class Config(BaseModel):
+    # 推送方式list 枚举值:pushplus mail server
+    disconnect_notice_mode_list: list[str] = ["pushplus"]
+
+    # 邮件推送
     disconnect_notice_smtp_user: str | int = ""
     disconnect_notice_smtp_password: str | int = ""
     disconnect_notice_smtp_server: str | int = ""
     disconnect_notice_smtp_port: int = 465
     disconnect_notice_notice_email: str | int = ""
-    disconnect_notice_dev_mode: bool = False
-    disconnect_notice_max_grace_time: int = 10
+
+    # pushplus推送 https://www.pushplus.plus/
+    disconnect_notice_pushplus_token: str = ""
+
+    # 其他设定
+    disconnect_notice_dev_mode: bool = False # dev开发模式，此模式下仅输出日志，不实际进行通知
+    disconnect_notice_max_grace_time: int = 10 # 断连时最大宽限时间:秒 在此期间重连便不会进行通知
 
 
 driver = get_driver()

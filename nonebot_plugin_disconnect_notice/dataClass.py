@@ -18,6 +18,19 @@ class MailConfig:
         else:
             return False
 
+# https://www.pushplus.plus/doc/
+class PushPlusConfig:
+    def __init__(self,
+                 token: str
+                 ):
+        self.token = token
+
+    def check_params(self) -> bool:
+        """检查参数是否填写完整"""
+        if self.token:
+            return True
+        else:
+            return False
 
 class BotParams:
     def __init__(self,
@@ -26,3 +39,4 @@ class BotParams:
                  ):
         self.adapter_name = adapter_name
         self.bot_id = bot_id
+
