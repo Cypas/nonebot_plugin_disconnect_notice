@@ -19,6 +19,9 @@ class Config(BaseModel):
     # pushplus推送 https://www.pushplus.plus/
     disconnect_notice_pushplus_token: str = ""
 
+    # server酱 https://sct.ftqq.com/
+    disconnect_notice_server_key: str = ""
+
     # 其他设定
     disconnect_notice_dev_mode: bool = False # dev开发模式，此模式下仅输出日志，不实际进行通知
     disconnect_notice_max_grace_time: int = 10 # 断连时最大宽限时间:秒 在此期间重连便不会进行通知

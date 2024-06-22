@@ -6,7 +6,7 @@ import httpx
 
 from nonebot import logger, Bot
 from .config import plugin_config
-from .dataClass import MailConfig, BotParams, PushPlusConfig
+from .dataClass import MailConfig, BotParams, PushPlusConfig, ServerConfig
 from .utils import AsHttpReq
 
 mail_config: MailConfig = MailConfig(
@@ -21,6 +21,10 @@ pushplus_config: PushPlusConfig = PushPlusConfig(
     token=plugin_config.disconnect_notice_pushplus_token,
 )
 
+server_config: ServerConfig = ServerConfig(
+    key=plugin_config.disconnect_notice_server_key,
+)
+
 
 async def send_notice(bot_params: BotParams, test=False):
     """整合发送通知消息"""
@@ -30,7 +34,52 @@ async def send_notice(bot_params: BotParams, test=False):
         err = await send_pushplus(bot_params, test=test)
     if "mail" in mode_list:
         err = await send_mail(bot_params, test=test)
+    if "server" in mode_list:
+        err = await send_server(bot_params, test=test)
     return err
+
+
+async def send_server(bot_params: BotParams, test: bool = False):
+    """发送server酱微信公众号通知"""
+    global server_config
+    # 参数校验
+    if not server_config.check_params():
+        error = "server酱通知缺少配置参数，无法进行通知，\n" \
+                "请参考https://github.com/Cypas/nonebot_plugin_disconnect_notice#%EF%B8%8F-%E9%85%8D%E7%BD%AE" \
+                "\n填写该推送方式配置项"
+        logger.error(error)
+        return error
+    url = f"https://sctapi.ftqq.com/{server_config.key}.send"
+    if not test:
+        title = f"[nonebot2]你的bot掉线了"
+        content = f"你的 {bot_params.adapter_name} 适配器的bot账号: {bot_params.bot_id} 掉线了，可能是被风控了，赶快去看看吧"
+    else:
+        title = f"[nonebot2]掉线通知测试"
+        content = f"这是一个掉线通知测试信息，你的bot并没有掉线"
+    json = {"title": title,
+            "desp": content,
+            "noip": 1,
+            "channel": 9
+            }
+    try:
+        r = await AsHttpReq.post(url, json=json)
+        if r.status_code == 200:
+            r_json = r.json()
+            if r_json["code"] == 0:
+                logger.info("server酱通知成功!")
+            else:
+                err = f"server酱通知失败，res:{r.text}"
+                logger.error(err)
+                return err
+    except (httpx.ConnectError,httpx.ConnectTimeout):
+        err = f"server酱通知失败，bot服务器网络错误"
+        logger.error(err)
+        return err
+    except Exception as e:
+        err = f"server酱通知失败，错误信息如下{e}"
+        logger.error(err)
+        return err
+    return
 
 async def send_pushplus(bot_params: BotParams, test: bool = False):
     """发送pushplus微信公众号通知"""
@@ -61,6 +110,10 @@ async def send_pushplus(bot_params: BotParams, test: bool = False):
             r_json = r.json()
             if r_json["code"] == 200:
                 logger.info("pushplus通知成功!")
+            else:
+                err = f"pushplus通知失败，res:{r.text}"
+                logger.error(err)
+                return err
     except (httpx.ConnectError,httpx.ConnectTimeout):
         err = f"pushplus通知失败，bot服务器网络错误"
         logger.error(err)

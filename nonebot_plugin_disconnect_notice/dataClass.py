@@ -32,6 +32,20 @@ class PushPlusConfig:
         else:
             return False
 
+class ServerConfig:
+    def __init__(self,
+                 key: str
+                 ):
+        self.key = key
+
+    def check_params(self) -> bool:
+        """检查参数是否填写完整"""
+        if self.key:
+            return True
+        else:
+            return False
+
+
 class BotParams:
     def __init__(self,
                  adapter_name: str,
