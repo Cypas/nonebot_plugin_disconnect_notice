@@ -38,7 +38,7 @@ async def send_pushplus(bot_params: BotParams, test: bool = False):
     # 参数校验
     if not pushplus_config.check_params():
         error = "pushplus通知缺少配置参数，无法进行通知，\n" \
-                "请参考https://github.com/Cypas/nonebot_plugin_disconnect_notice?tab=readme-ov-file#%EF%B8%8F-%E9%85%8D%E7%BD%AE" \
+                "请参考https://github.com/Cypas/nonebot_plugin_disconnect_notice#%EF%B8%8F-%E9%85%8D%E7%BD%AE" \
                 "\n填写该推送方式配置项"
         logger.error(error)
         return error
@@ -78,7 +78,7 @@ async def send_mail(bot_params: BotParams, test: bool = False):
     # 参数校验
     if not mail_config.check_params():
         error = "邮件通知缺少配置参数，无法进行通知，\n" \
-                "请参考https://github.com/Cypas/nonebot_plugin_disconnect_notice?tab=readme-ov-file#%EF%B8%8F-%E9%85%8D%E7%BD%AE" \
+                "请参考https://github.com/Cypas/nonebot_plugin_disconnect_notice#%EF%B8%8F-%E9%85%8D%E7%BD%AE" \
                 "\n填写该推送方式配置项"
         logger.error(error)
         return error

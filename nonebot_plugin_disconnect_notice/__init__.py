@@ -93,7 +93,13 @@ async def connect(bot: Bot):
             # 缺少参数,私聊通知主人
             super_user: str = list(global_config.superusers)[0]
             if super_user:
-                msg = "【插件nonebot-plugin-disconnect-notice】\n缺少mail配置项，请按照" \
+                mode_list = plugin_config.disconnect_notice_mode_list
+                mode_name = ""
+                if "pushplus" in mode_list:
+                    mode_name = "pushplus"
+                if "mail" in mode_list:
+                    mode_name = "mail"
+                msg = f"【插件nonebot-plugin-disconnect-notice】\n缺少{mode_name}配置项，请按照" \
                       "https://github.com/Cypas/nonebot_plugin_disconnect_notice#%EF%B8%8F-%E9%85%8D%E7%BD%AE" \
                       "\n添加配置项后，再重新载入插件"
                 await bot.send_private_msg(user_id=int(super_user), message=msg)
