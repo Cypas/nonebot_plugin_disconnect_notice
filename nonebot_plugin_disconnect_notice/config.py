@@ -19,7 +19,7 @@ class Config(BaseModel):
     # pushplus推送 https://www.pushplus.plus/
     disconnect_notice_pushplus_token: str = ""
 
-    # server酱 https://sct.ftqq.com/
+    # server酱 https://sct.ftqq.com/r/1483
     disconnect_notice_server_key: str = ""
 
     # 其他设定
