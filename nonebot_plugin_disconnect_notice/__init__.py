@@ -1,12 +1,14 @@
+import json
 from datetime import datetime as dt, timedelta
 
 from nonebot.internal.matcher import Matcher
 from nonebot.plugin import PluginMetadata
-from nonebot import Bot, require, get_bots
+from nonebot import Bot, require, get_bots, on_notice
 from nonebot import logger
 
 # onebot11 协议
 from nonebot.adapters.onebot.v11 import Bot as V11Bot
+from nonebot.adapters.onebot.v11 import Event as V11Event
 from nonebot import on_command
 from nonebot.permission import SUPERUSER
 
@@ -48,6 +50,35 @@ async def _(matcher: Matcher):
         msg = f"测试通知发送失败，请重新检查配置项参数正确性，错误信息为: {res}"
     await matcher.finish(msg)
 
+# NapCatQQ与Lagrange.Core下线情况单独处理
+offline = on_notice(priority=1, block=False)
+@offline.handle()
+async def _(bot: V11Bot,event: V11Event):
+    if event.get_event_name() == "notice.bot_offline":
+        des = json.loads(event.get_event_description().replace("'", '"'))
+        if des:
+            # 开发者模式下不生效
+            platform = "NapCatQQ或Lagrange"
+            bot_id = bot.self_id
+            if not plugin_config.disconnect_notice_dev_mode:
+                job_id = f"disconnect_notice_{platform}_{bot_id}"
+                if scheduler.get_job(job_id):
+                    scheduler.remove_job(job_id)
+                # 计算运行时间
+                run_time = dt.now() + timedelta(seconds=plugin_config.disconnect_notice_max_grace_time)
+
+                bot_params = BotParams(
+                    adapter_name=platform,
+                    bot_id=bot_id,
+                    tag = des['tag'],
+                )
+                scheduler.add_job(
+                    id=job_id, func=cron_send_notice, args=[bot_params],
+                    misfire_grace_time=60, coalesce=True, max_instances=1, trigger='date', run_date=run_time
+                )
+            else:
+                logger.info(f"当前掉线通知已开启dev模式，不会进行任何实际通知")
+
 
 @driver.on_bot_disconnect
 async def disconnect(bot: Bot):
@@ -62,23 +93,25 @@ async def disconnect(bot: Bot):
         # 计算运行时间
         run_time = dt.now() + timedelta(seconds=plugin_config.disconnect_notice_max_grace_time)
 
+        bot_params = BotParams(
+            adapter_name=platform,
+            bot_id=bot_id
+        )
         scheduler.add_job(
-            id=job_id, func=cron_send_notice, args=[platform, bot_id],
+            id=job_id, func=cron_send_notice, args=[bot_params],
             misfire_grace_time=60, coalesce=True, max_instances=1, trigger='date', run_date=run_time
         )
     else:
         logger.info(f"当前掉线通知已开启dev模式，不会进行任何实际通知")
 
-async def cron_send_notice(platform, bot_id):
+async def cron_send_notice(bot_params: BotParams):
     """定时任务：发送通知"""
+    platform =bot_params.adapter_name
+    bot_id = bot_params.bot_id
     # 重新检查bot是否接入
     bots = get_bots()
     bot = bots.get(bot_id)
-    if not bot:
-        bot_params = BotParams(
-            adapter_name=platform,
-            bot_id=bot_id
-        )
+    if (not bot) or (platform == "NapCatQQ或Lagrange"):
         logger.warning(f"平台:{platform} bot_id:{bot_id} 已掉线，即将进行通知")
         await send_notice(bot_params)
     else:

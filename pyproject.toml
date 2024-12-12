@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot-plugin-disconnect-notice"
-version = "0.3.2"
+version = "0.3.3"
 description = "bot断连时的通知插件"
 authors = ["cypas <ayano05@outlook.com>"]
 readme = "README.md"
@@ -10,7 +10,6 @@ packages = [{include = "nonebot_plugin_disconnect_notice"}]
 python = "^3.8"
 nonebot2="^2.2.0"
 nonebot-adapter-onebot = "^2.4.1"
-nonebot-adapter-kaiheila = "^0.3.1"
 aiosmtplib = "^2.0.2"
 httpx="^0.24.1"
 nonebot-plugin-apscheduler = "^0.4.0"
