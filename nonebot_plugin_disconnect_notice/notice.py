@@ -55,7 +55,7 @@ async def send_server(bot_params: BotParams, test: bool = False):
         if not bot_params.tag:
             content = f"你的 {bot_params.adapter_name} 适配器的bot账号: {bot_params.bot_id} 掉线了，可能是被风控了，赶快去看看吧"
         else:
-            content = f"你的 {bot_params.adapter_name} 适配器的bot账号: {bot_params.bot_id} 掉线了，原因为: {bot_params.tag} ，赶快去看看吧"
+            content = f"你的 {bot_params.adapter_name} 适配器的bot账号: {bot_params.bot_id} 掉线了，原因为: {bot_params.tag} 。赶快去看看吧"
     else:
         title = f"[nonebot2]掉线通知测试"
         content = f"这是一个掉线通知测试信息，你的bot并没有掉线"
@@ -100,7 +100,7 @@ async def send_pushplus(bot_params: BotParams, test: bool = False):
         if not bot_params.tag:
             content = f"你的 {bot_params.adapter_name} 适配器的bot账号: {bot_params.bot_id} 掉线了，可能是被风控了，赶快去看看吧"
         else:
-            content = f"你的 {bot_params.adapter_name} 适配器的bot账号: {bot_params.bot_id} 掉线了，原因为: {bot_params.tag} ，赶快去看看吧"
+            content = f"你的 {bot_params.adapter_name} 适配器的bot账号: {bot_params.bot_id} 掉线了，原因为: {bot_params.tag} 。赶快去看看吧"
     else:
         title = f"[nonebot2]掉线通知测试"
         content = f"这是一个掉线通知测试信息，你的bot并没有掉线"
@@ -146,7 +146,7 @@ async def send_mail(bot_params: BotParams, test: bool = False):
     if not bot_params.tag:
         content = f"你的 {bot_params.adapter_name} 适配器的bot账号: {bot_params.bot_id} 掉线了，可能是被风控了，赶快去看看吧"
     else:
-        content = f"你的 {bot_params.adapter_name} 适配器的bot账号: {bot_params.bot_id} 掉线了，原因为: {bot_params.tag} ，赶快去看看吧"
+        content = f"你的 {bot_params.adapter_name} 适配器的bot账号: {bot_params.bot_id} 掉线了，原因为: {bot_params.tag} 。赶快去看看吧"
     if test:
         subject = f"[nonebot2]掉线通知测试"
         content = f"这是一封掉线通知测试邮件，你的bot并没有掉线"

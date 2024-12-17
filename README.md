@@ -61,21 +61,6 @@ _✨ bot断连时的通知插件 ✨_
 运行插件前，需要在 nonebot2 项目的`.env.prod`文件中按照不同推送方式添加下表中的相应配置项
 
 <details>
-<summary>pushplus微信公众号消息配置教程</summary>
-
-1. 进入[pushplus官网](https://www.pushplus.plus/)
-2. 点击网页右上角 **登录** 按钮，微信扫码完成登录
-3. 点击公众号提示的该卡片完成登录绑定，提示启用成功即可
-   
-   ![1.png](images/pushplus/1.png)
-4. 回到网页端，顶部菜单栏选择**发送消息 - 一对一消息**,然后点击**一键复制**
-   
-   ![2.png](images/pushplus/2.png)
-5. 将token按照下方配置项名 disconnect_notice_pushplus_token = "" 填入`.env.prod` 文件内
-
-</details>
-
-<details>
 <summary>server酱(方糖)公众号消息配置教程</summary>
 > server酱每天免费消息推送额度只有5条
 
@@ -86,6 +71,23 @@ _✨ bot断连时的通知插件 ✨_
 
    ![1.png](images/server/1.png)
 5. 将token按照下方配置项名 disconnect_notice_server_key = "" 填入`.env.prod` 文件内
+
+</details>
+
+<details>
+<summary>pushplus微信公众号消息配置教程</summary>
+
+> pushplus现在强制要求实名以及每次实名1元认证费用，推荐使用其他推送配置
+
+1. 进入[pushplus官网](https://www.pushplus.plus/)
+2. 点击网页右上角 **登录** 按钮，微信扫码完成登录
+3. 点击公众号提示的该卡片完成登录绑定，提示启用成功即可
+   
+   ![1.png](images/pushplus/1.png)
+4. 回到网页端，顶部菜单栏选择**发送消息 - 一对一消息**,然后点击**一键复制**
+   
+   ![2.png](images/pushplus/2.png)
+5. 将token按照下方配置项名 disconnect_notice_pushplus_token = "" 填入`.env.prod` 文件内
 
 </details>
 
@@ -125,18 +127,18 @@ _✨ bot断连时的通知插件 ✨_
 
 </details>
 
-|               配置项                | 必填 |    值类型    |     默认值      |                              说明                               |
-|:--------------------------------:|:--:|:---------:|:------------:|:-------------------------------------------------------------:|
-|   disconnect_notice_mode_list    | 是  | list[str] | ["pushplus"] | 通知类型列表，枚举值:pushplus mail server，可填写多个通知源，如["pushplus"，"mail"] |
-| disconnect_notice_pushplus_token | 是  |    str    |      ""      |                pushplus微信公众号token，具体获取方式见上方教程                 |
-|   disconnect_notice_server_key   | 是  |    str    |      ""      |                  server酱微信公众号key，具体获取方式见上方教程                  |
-|   disconnect_notice_smtp_user    | 是  |    str    |      ""      |                    邮箱账号,如 114514@yeah.net                     |
-| disconnect_notice_smtp_password  | 是  |    str    |      ""      |                       邮箱密码或授权码,如 114514                       |
-|  disconnect_notice_smtp_server   | 是  |    str    |      ""      |                    邮箱服务器地址,如 smtp.yeah.net                    |
-|   disconnect_notice_smtp_port    | 是  |    int    |     465      |                       邮箱端口号，ssl模式时为465                        |
-|  disconnect_notice_notice_email  | 是  |    str    |      ""      |                        收件人邮箱，填写自己邮箱即可                         |
-|    disconnect_notice_dev_mode    | 否  |   bool    |    False     |       开发者模式，该模式下bot断开连接不会触发通知消息，避免本地测试插件时不断重载而导致的大量掉线通知       |
-| disconnect_notice_max_grace_time | 否  |    int    |      10      |            断连后最大宽限时长，单位:秒，如果在此期间bot完成了重连，则不触发邮件通知             |
+|               配置项                | 必填 |    值类型    |    默认值     |                              说明                              |
+|:--------------------------------:|:--:|:---------:|:----------:|:------------------------------------------------------------:|
+|   disconnect_notice_mode_list    | 是  | list[str] | ["server"] | 通知类型列表，枚举值: mail server pushplus，可填写多个通知源，如["server"，"mail"] |
+| disconnect_notice_pushplus_token | 是  |    str    |     ""     |                pushplus微信公众号token，具体获取方式见上方教程                |
+|   disconnect_notice_server_key   | 是  |    str    |     ""     |                 server酱微信公众号key，具体获取方式见上方教程                  |
+|   disconnect_notice_smtp_user    | 是  |    str    |     ""     |                    邮箱账号,如 114514@yeah.net                    |
+| disconnect_notice_smtp_password  | 是  |    str    |     ""     |                      邮箱密码或授权码,如 114514                       |
+|  disconnect_notice_smtp_server   | 是  |    str    |     ""     |                   邮箱服务器地址,如 smtp.yeah.net                    |
+|   disconnect_notice_smtp_port    | 是  |    int    |    465     |                       邮箱端口号，ssl模式时为465                       |
+|  disconnect_notice_notice_email  | 是  |    str    |     ""     |                        收件人邮箱，填写自己邮箱即可                        |
+|    disconnect_notice_dev_mode    | 否  |   bool    |   False    |      开发者模式，该模式下bot断开连接不会触发通知消息，避免本地测试插件时不断重载而导致的大量掉线通知       |
+| disconnect_notice_max_grace_time | 否  |    int    |     10     |            断连后最大宽限时长，单位:秒，如果在此期间bot完成了重连，则不触发邮件通知            |
 
 <details>
 <summary>示例配置</summary>

@@ -7,7 +7,7 @@ from pydantic import BaseModel
 # 其他地方出现的类似 from .. import config，均是从 __init__.py 导入的 Config 实例
 class Config(BaseModel):
     # 推送方式list 枚举值:pushplus mail server
-    disconnect_notice_mode_list: list[str] = ["pushplus"]
+    disconnect_notice_mode_list: list[str] = ["server"]
 
     # 邮件推送
     disconnect_notice_smtp_user: str | int = ""
