@@ -15,16 +15,17 @@ from nonebot.permission import SUPERUSER
 from .config import driver, plugin_config, global_config, Config
 from .dataClass import BotParams
 from .notice import send_notice, mail_config, send_mail, server_config, pushplus_config
+from .utils import PLATFORM_SERVER, PLATFORM_MAIL, PLATFORM_PUSHPLUS,PLATFORM_PUSHOVER
 
 require("nonebot_plugin_apscheduler")
 from nonebot_plugin_apscheduler import scheduler
 
 __plugin_meta__ = PluginMetadata(
     name="bot断连通知",
-    description="bot断连时的通知插件，当前支持邮件通知，pushplus微信公众号通知",
+    description="bot断连时的通知插件，当前支持邮件通知，pushplus微信公众号通知，server酱公众号通知，pushover多平台设备通知",
     usage="""
     超级用户指令:
-        掉线测试:主动触发掉线通知测试
+        /掉线测试:主动触发掉线通知测试
     """,
     type="application",
     # 发布必填，当前有效类型有：`library`（为其他插件编写提供功能），`application`（向机器人用户提供功能）。
@@ -40,7 +41,12 @@ notice_test = on_command("断连通知测试",aliases={"掉线测试","掉线通
 @notice_test.handle()
 async def _(matcher: Matcher):
     """主动触发掉线通知测试"""
-    msg = "已发送测试通知，如通知渠道包含邮箱，邮件未收到时请检查邮件垃圾箱"
+    msg = "已发送测试通知\n"
+    mode_list = plugin_config.disconnect_notice_mode_list
+    if PLATFORM_MAIL in mode_list:
+        msg += "\n当前通知渠道包括mail，若邮件未收到时请检查邮件垃圾箱"
+    if PLATFORM_PUSHOVER in mode_list:
+        msg += "\n当前通知渠道包括pushover，若未收到通知时，请检查是否有任一平台(安卓/ios/ipad/pc/mac)的app保持了后台运行且打开了系统通知"
     bot_params = BotParams(
         adapter_name="114514",
         bot_id="114514"
@@ -125,14 +131,17 @@ async def connect(bot: Bot):
         mode_list = plugin_config.disconnect_notice_mode_list
         mode_name = ""
         params_ok = False
-        if "pushplus" in mode_list:
-            mode_name = "pushplus"
+        if PLATFORM_PUSHPLUS in mode_list:
+            mode_name = PLATFORM_PUSHPLUS
             params_ok = pushplus_config.check_params()
-        if "mail" in mode_list:
-            mode_name = "mail"
+        if PLATFORM_MAIL in mode_list:
+            mode_name = PLATFORM_MAIL
             params_ok = mail_config.check_params()
-        if "server" in mode_list:
-            mode_name = "server"
+        if PLATFORM_SERVER in mode_list:
+            mode_name = PLATFORM_SERVER
+            params_ok = server_config.check_params()
+        if PLATFORM_PUSHOVER in mode_list:
+            mode_name = PLATFORM_PUSHOVER
             params_ok = server_config.check_params()
         if not params_ok:
             # 缺少参数,私聊通知主人

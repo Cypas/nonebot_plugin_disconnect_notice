@@ -22,6 +22,10 @@ class Config(BaseModel):
     # server酱 https://sct.ftqq.com/r/1483
     disconnect_notice_server_key: str = ""
 
+    # pushover
+    disconnect_notice_pushover_user_key: str = ""
+    disconnect_notice_pushover_token: str = ""
+
     # 其他设定
     disconnect_notice_dev_mode: bool = False # dev开发模式，此模式下仅输出日志，不实际进行通知
     disconnect_notice_max_grace_time: int = 10 # 断连时最大宽限时间:秒 在此期间重连便不会进行通知

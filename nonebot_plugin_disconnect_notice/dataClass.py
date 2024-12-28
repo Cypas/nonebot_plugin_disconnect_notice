@@ -32,6 +32,7 @@ class PushPlusConfig:
         else:
             return False
 
+# https://sct.ftqq.com/
 class ServerConfig:
     def __init__(self,
                  key: str
@@ -45,6 +46,21 @@ class ServerConfig:
         else:
             return False
 
+# https://pushover.net/api#messages
+class PushOverConfig:
+    def __init__(self,
+                 user_key: str,
+                 token: str
+                 ):
+        self.user_key = user_key,
+        self.token = token
+
+    def check_params(self) -> bool:
+        """检查参数是否填写完整"""
+        if self.token and self.user_key:
+            return True
+        else:
+            return False
 
 class BotParams:
     def __init__(self,

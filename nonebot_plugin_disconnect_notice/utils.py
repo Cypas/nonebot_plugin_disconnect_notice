@@ -3,6 +3,11 @@ from httpx import Response
 
 HTTP_TIME_OUT = 10 # 请求超时，秒
 
+PLATFORM_PUSHPLUS = "pushplus"
+PLATFORM_MAIL = "mail"
+PLATFORM_SERVER = "server"
+PLATFORM_PUSHOVER = "pushover"
+
 class AsHttpReq(object):
     """httpx 异步请求封装"""
 

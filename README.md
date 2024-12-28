@@ -8,7 +8,7 @@
 
 # nonebot-plugin-disconnect-notice
 
-_✨ bot断连时的通知插件 ✨_
+_✨ bot断连时的通知插件，支持多种通知方式 ✨_
 
 
 <a href="./LICENSE">
@@ -25,7 +25,7 @@ _✨ bot断连时的通知插件 ✨_
 ## 📖 介绍
 
 - 可以在bot断开与nonebot的连接时向主人发送微信公众号消息或邮件消息，用来通知主人bot可能被风控掉线
-- 目前支持全部适配器协议，通知方式支持: [pushplus](https://www.pushplus.plus/)微信公众号通知; [server酱](https://sct.ftqq.com/r/1483)(方糖)微信公众号通知; emil邮件通知
+- 目前支持全部适配器协议，通知方式支持: [pushplus](https://www.pushplus.plus/)微信公众号通知; [server酱](https://sct.ftqq.com/r/1483)(方糖)微信公众号通知;[pushover](https://pushover.net/)安卓/ios/ipad/pc多设备通知; emil邮件通知
 - 如果有其他通知方式的需求，欢迎提issues或pr
 
 ## 💿 安装
@@ -92,6 +92,29 @@ _✨ bot断连时的通知插件 ✨_
 </details>
 
 <details>
+<summary>pushover消息配置教程</summary>
+
+> pushover可通过他的安卓/ios/ipad/pc客户端进行推送，个人用户可免费使用30天，后续需要付费5美元买断，不太推荐此方式
+
+1. 进入[pushplus官网](https://pushover.net/signup)并通过邮箱注册账号，并点开邮件内链接验证账号
+2. 复制此处user_key
+   ![1.png](images/pushover/1.png)
+3. 网页向下滑动，点击创建app
+   ![2.png](images/pushover/2.png)
+4. 输入一个app名称，如nb2，勾选条款后点击创建
+   ![3.png](images/pushover/3.png)
+5. 复制此处token
+   ![4.png](images/pushover/4.png)
+
+6. 将user_key和token按照下方配置项名 disconnect_notice_pushover_user_key = "",disconnect_notice_pushover_token = "" 填入`.env.prod` 文件内
+
+7. 打开[pushover客户端下载页](https://pushover.net/clients)下载至少一个设备端的应用并登录相同账号 
+   - ```注意```:ios端及mac端可以不用开启app的情况下进行消息推送，安卓端则需要保持google在线或app后台运行状态，这点对于安卓端相当不友好
+   - ```注意```:每个设备端至多有30天试用期，到期后需要花费5美元买断(各设备端单独收费)
+
+</details>
+
+<details>
 <summary>邮件通知配置教程</summary>
 
 - 以qq邮箱为例，其他邮箱的开启smtp方式是类似的
@@ -127,18 +150,20 @@ _✨ bot断连时的通知插件 ✨_
 
 </details>
 
-|               配置项                | 必填 |    值类型    |    默认值     |                              说明                              |
-|:--------------------------------:|:--:|:---------:|:----------:|:------------------------------------------------------------:|
-|   disconnect_notice_mode_list    | 是  | list[str] | ["server"] | 通知类型列表，枚举值: mail server pushplus，可填写多个通知源，如["server"，"mail"] |
-| disconnect_notice_pushplus_token | 是  |    str    |     ""     |                pushplus微信公众号token，具体获取方式见上方教程                |
-|   disconnect_notice_server_key   | 是  |    str    |     ""     |                 server酱微信公众号key，具体获取方式见上方教程                  |
-|   disconnect_notice_smtp_user    | 是  |    str    |     ""     |                    邮箱账号,如 114514@yeah.net                    |
-| disconnect_notice_smtp_password  | 是  |    str    |     ""     |                      邮箱密码或授权码,如 114514                       |
-|  disconnect_notice_smtp_server   | 是  |    str    |     ""     |                   邮箱服务器地址,如 smtp.yeah.net                    |
-|   disconnect_notice_smtp_port    | 是  |    int    |    465     |                       邮箱端口号，ssl模式时为465                       |
-|  disconnect_notice_notice_email  | 是  |    str    |     ""     |                        收件人邮箱，填写自己邮箱即可                        |
-|    disconnect_notice_dev_mode    | 否  |   bool    |   False    |      开发者模式，该模式下bot断开连接不会触发通知消息，避免本地测试插件时不断重载而导致的大量掉线通知       |
-| disconnect_notice_max_grace_time | 否  |    int    |     10     |            断连后最大宽限时长，单位:秒，如果在此期间bot完成了重连，则不触发邮件通知            |
+|                 配置项                 | 必填 |    值类型    |    默认值     |                                  说明                                   |
+|:-----------------------------------:|:--:|:---------:|:----------:|:---------------------------------------------------------------------:|
+|     disconnect_notice_mode_list     | 是  | list[str] | ["server"] | 通知类型列表，枚举值: mail server pushplus pushover，可填写多个通知源，如["server"，"mail"] |
+|  disconnect_notice_pushplus_token   | 是  |    str    |     ""     |                    pushplus微信公众号token，具体获取方式见上方教程                     |
+|    disconnect_notice_server_key     | 是  |    str    |     ""     |                      server酱微信公众号key，具体获取方式见上方教程                      |
+| disconnect_notice_pushover_user_key | 是  |    str    |     ""     |                     pushover user_key，具体获取方式见上方教程                     |
+|  disconnect_notice_pushover_token   | 是  |    str    |     ""     |                      pushover token，具体获取方式见上方教程                       |
+|     disconnect_notice_smtp_user     | 是  |    str    |     ""     |                        邮箱账号,如 114514@yeah.net                         |
+|   disconnect_notice_smtp_password   | 是  |    str    |     ""     |                           邮箱密码或授权码,如 114514                           |
+|    disconnect_notice_smtp_server    | 是  |    str    |     ""     |                        邮箱服务器地址,如 smtp.yeah.net                        |
+|     disconnect_notice_smtp_port     | 是  |    int    |    465     |                           邮箱端口号，ssl模式时为465                            |
+|   disconnect_notice_notice_email    | 是  |    str    |     ""     |                            收件人邮箱，填写自己邮箱即可                             |
+|     disconnect_notice_dev_mode      | 否  |   bool    |   False    |           开发者模式，该模式下bot断开连接不会触发通知消息，避免本地测试插件时不断重载而导致的大量掉线通知           |
+|  disconnect_notice_max_grace_time   | 否  |    int    |     10     |                断连后最大宽限时长，单位:秒，如果在此期间bot完成了重连，则不触发邮件通知                 |
 
 <details>
 <summary>示例配置</summary>
@@ -151,6 +176,9 @@ disconnect_notice_mode_list = ["pushplus"]
 disconnect_notice_pushplus_token = ""
 # server酱 https://sct.ftqq.com/r/1483
 disconnect_notice_server_key = ""
+# pushover
+disconnect_notice_pushover_user_key = ""
+disconnect_notice_pushover_token = ""
 # 邮件通知
 disconnect_notice_smtp_user = "114514@yeah.net" #邮箱账号
 disconnect_notice_smtp_password = "114514" #邮箱密码
@@ -173,22 +201,28 @@ disconnect_notice_max_grace_time = 10 #断连后最大宽限时长，单位:秒�
 <details>
 <summary>邮件通知</summary>
 
-![mail.png](images/mail.png)
+![mail.png](images/mail/mail.png)
 
 </details>
 
 <details>
 <summary>pushplus微信通知</summary>
 
-![mail.png](images/pushplus.jpg)
+![mail.png](images/pushplus/pushplus.jpg)
 
 </details>
 
 <details>
 <summary>server酱微信通知</summary>
 
-![server.png](images/server.png)
+![server.png](images/server/server.png)
 
+</details>
+
+<details>
+<summary>pushover通知</summary>
+
+![pushover.png](images/pushover/pushover.png)
 </details>
 
 ## ✨喜欢的话就点个star✨吧，球球了QAQ
