@@ -13,14 +13,14 @@ class AsHttpReq(object):
 
     @staticmethod
     async def get(url, **kwargs) -> Response:
-        proxies = None
-        async with httpx.AsyncClient(proxies=proxies) as client:
+        proxy = None
+        async with httpx.AsyncClient(proxy=proxy) as client:
             response = await client.get(url, timeout=HTTP_TIME_OUT, **kwargs)
             return response
 
     @staticmethod
     async def post(url, **kwargs) -> Response:
-        proxies = None
-        async with httpx.AsyncClient(proxies=proxies) as client:
+        proxy = None
+        async with httpx.AsyncClient(proxy=proxy) as client:
             response = await client.post(url, timeout=HTTP_TIME_OUT, **kwargs)
             return response

@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from nonebot import get_driver, get_plugin_config
 from pydantic import BaseModel
 
