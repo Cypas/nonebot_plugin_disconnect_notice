@@ -25,10 +25,10 @@ _✨ bot断连时的通知插件，支持多种通知方式 ✨_
 
 - 可以在bot断开与nonebot的连接时向主人发送微信公众号消息或邮件消息，用来通知主人bot可能被风控掉线
 - 目前支持全部适配器协议，通知方式支持:
-    - [pushplus](https://www.pushplus.plus/)微信公众号通知;
     - [server酱Turbo](https://sct.ftqq.com/r/1483)(方糖)微信公众号通知;
     - [server酱3](https://sc3.ft07.com/)安卓/ios app离线通知;
-    - [pushover](https://pushover.net/)安卓/ios/ipad/pc多设备通知; emil邮件通知;
+    - [pushplus](https://www.pushplus.plus/)微信公众号通知;
+    - [pushover](https://pushover.net/)安卓/ios/ipad/pc多设备通知;
     - 飞书 群聊bot通过webhook模式通知;
     - emil邮件通知;
 - 如果有其他通知方式的需求，欢迎提issues或pr
