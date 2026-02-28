@@ -1,24 +1,29 @@
+from typing import Union
+
 from nonebot import get_driver, get_plugin_config
 from pydantic import BaseModel
 
 
 # 其他地方出现的类似 from .. import config，均是从 __init__.py 导入的 Config 实例
 class Config(BaseModel):
-    # 推送方式list 枚举值:pushplus mail server
+    # 推送方式list 枚举值:pushplus mail server等
     disconnect_notice_mode_list: list[str] = ["server"]
 
     # 邮件推送
-    disconnect_notice_smtp_user: str | int = ""
-    disconnect_notice_smtp_password: str | int = ""
-    disconnect_notice_smtp_server: str | int = ""
+    disconnect_notice_smtp_user: Union[str, int] = ""
+    disconnect_notice_smtp_password: Union[str, int] = ""
+    disconnect_notice_smtp_server: Union[str, int] = ""
     disconnect_notice_smtp_port: int = 465
-    disconnect_notice_notice_email: str | int = ""
+    disconnect_notice_notice_email: Union[str, int] = ""
 
     # pushplus推送 https://www.pushplus.plus/
     disconnect_notice_pushplus_token: str = ""
 
-    # server酱 https://sct.ftqq.com/r/1483
+    # server酱Turbo https://sct.ftqq.com/r/1483
     disconnect_notice_server_key: str = ""
+
+    # server酱3 https://sc3.ft07.com/
+    disconnect_notice_server3_key: str = ""
 
     # pushover
     disconnect_notice_pushover_user_key: str = ""

@@ -1,13 +1,14 @@
 from email.header import Header
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from typing import Optional
+
 import aiosmtplib
-import httpx
 
 from nonebot import logger, Bot
 from .config import plugin_config
-from .dataClass import MailConfig, BotParams, PushPlusConfig, ServerConfig, PushOverConfig
-from .utils import AsHttpReq, PLATFORM_MAIL, PLATFORM_PUSHPLUS, PLATFORM_SERVER, PLATFORM_PUSHOVER
+from .dataClass import MailConfig, BotParams, PushPlusConfig, ServerConfig, PushOverConfig, Server3Config
+from .utils import *
 
 mail_config: MailConfig = MailConfig(
     user=plugin_config.disconnect_notice_smtp_user,
@@ -25,16 +26,21 @@ server_config: ServerConfig = ServerConfig(
     key=plugin_config.disconnect_notice_server_key,
 )
 
+server3_config: Server3Config = Server3Config(
+    key=plugin_config.disconnect_notice_server3_key,
+)
+
 pushover_config: PushOverConfig = PushOverConfig(
     user_key=plugin_config.disconnect_notice_pushover_user_key,
     token=plugin_config.disconnect_notice_pushover_token
 )
 
-def check_params(platform: str) -> str|None:
+
+def check_params(platform: str) -> Optional[str]:
     """多平台检查配置参数完整性"""
     err = "{platform} 平台通知缺少配置参数，无法进行通知，\n" \
-                 "请参考https://github.com/Cypas/nonebot_plugin_disconnect_notice#%EF%B8%8F-%E9%85%8D%E7%BD%AE\n" \
-                 "填写该推送方式配置项"
+          "请参考https://github.com/Cypas/nonebot_plugin_disconnect_notice#%EF%B8%8F-%E9%85%8D%E7%BD%AE\n" \
+          "填写该推送方式配置项"
     if platform == PLATFORM_PUSHPLUS:
         if not pushplus_config.check_params():
             return err.format(platform=platform)
@@ -44,10 +50,14 @@ def check_params(platform: str) -> str|None:
     elif platform == PLATFORM_SERVER:
         if not server_config.check_params():
             return err.format(platform=platform)
+    elif platform == PLATFORM_SERVER3:
+        if not server3_config.check_params():
+            return err.format(platform=platform)
     elif platform == PLATFORM_PUSHOVER:
         if not pushover_config.check_params():
             return err.format(platform=platform)
     return None
+
 
 async def send_notice(bot_params: BotParams, test=False):
     """整合发送通知消息"""
@@ -70,7 +80,7 @@ async def send_notice(bot_params: BotParams, test=False):
         platform = PLATFORM_PUSHPLUS
         # 参数校验
         err = check_params(platform)
-        if not err :
+        if not err:
             err = await send_pushplus(title, content)
         if err:
             logger.error(err)
@@ -80,18 +90,28 @@ async def send_notice(bot_params: BotParams, test=False):
         platform = PLATFORM_MAIL
         # 参数校验
         err = check_params(platform)
-        if not err :
+        if not err:
             err = await send_mail(title, content)
         if err:
             logger.error(err)
 
-    # server
+    # server Turbo
     if PLATFORM_SERVER in mode_list:
         platform = PLATFORM_SERVER
         # 参数校验
         err = check_params(platform)
-        if not err :
+        if not err:
             err = await send_server(title, content)
+        if err:
+            logger.error(err)
+
+    # server3
+    if PLATFORM_SERVER3 in mode_list:
+        platform = PLATFORM_SERVER3
+        # 参数校验
+        err = check_params(platform)
+        if not err:
+            err = await send_server3(title, content)
         if err:
             logger.error(err)
 
@@ -100,39 +120,60 @@ async def send_notice(bot_params: BotParams, test=False):
         platform = PLATFORM_PUSHOVER
         # 参数校验
         err = check_params(platform)
-        if not err :
+        if not err:
             err = await send_pushover(title, content)
         if err:
             logger.error(err)
     return err
 
-async def send_server(title:str,content:str):
-    """发送server酱微信公众号通知"""
 
-    url = f"https://sctapi.ftqq.com/{server_config.key}.send"
-    json = {"title": title,
-            "desp": content,
-            "noip": 1,
-            "channel": 9
-            }
+async def send_server(title: str, content: str):
+    """发送server酱Turbo微信公众号通知"""
+    send_key = server_config.key
+    options = {
+        "noip": 1,
+        "channel": 9
+    }
     try:
-        r = await AsHttpReq.post(url, json=json)
+        r = await sc_send(sendkey=send_key, title=title, desp=content, options=options)
         if r.status_code == 200:
             r_json = r.json()
             if r_json["code"] == 0:
-                logger.info("server酱通知成功!")
+                logger.info("server酱Turbo通知成功!")
             else:
-                err = f"server酱通知失败，res:{r.text}"
+                err = f"server酱Turbo通知失败，res:{r.text}"
                 return err
-    except (httpx.ConnectError,httpx.ConnectTimeout):
-        err = f"server酱通知失败，bot服务器网络错误"
+    except (httpx.ConnectError, httpx.ConnectTimeout):
+        err = f"server酱Turbo通知失败，bot服务器网络错误"
         return err
     except Exception as e:
-        err = f"server酱通知失败，错误信息如下{e}"
+        err = f"server酱Turbo通知失败，错误信息如下{e}"
         return err
-    return
+    return None
 
-async def send_pushplus(title:str,content:str):
+
+async def send_server3(title: str, content: str):
+    """发送server酱3通知"""
+    send_key = server3_config.key
+    try:
+        r = await sc_send(sendkey=send_key, title=title, desp=content)
+        if r.status_code == 200:
+            r_json = r.json()
+            if r_json["code"] == 0:
+                logger.info("server酱3通知成功!")
+            else:
+                err = f"server酱3通知失败，res:{r.text}"
+                return err
+    except (httpx.ConnectError, httpx.ConnectTimeout):
+        err = f"server酱3通知失败，bot服务器网络错误"
+        return err
+    except Exception as e:
+        err = f"server酱3通知失败，错误信息如下{e}"
+        return err
+    return None
+
+
+async def send_pushplus(title: str, content: str):
     """发送pushplus微信公众号通知"""
     url = "http://www.pushplus.plus/send"
     json = {"token": pushplus_config.token,
@@ -150,15 +191,16 @@ async def send_pushplus(title:str,content:str):
             else:
                 err = f"pushplus通知失败，res:{r.text}"
                 return err
-    except (httpx.ConnectError,httpx.ConnectTimeout):
+    except (httpx.ConnectError, httpx.ConnectTimeout):
         err = f"pushplus通知失败，bot服务器网络错误"
         return err
     except Exception as e:
         err = f"pushplus通知失败，错误信息如下{e}"
         return err
-    return
+    return None
 
-async def send_mail(title:str,content:str):
+
+async def send_mail(title: str, content: str):
     """发送邮件通知"""
     # 构造邮件内容
     message = MIMEMultipart("alternative")
@@ -178,24 +220,25 @@ async def send_mail(title:str,content:str):
         err = f"邮件发送失败，错误信息如下{e}"
         return err
     logger.info("通知邮件发送成功!")
-    return
+    return None
 
-async def send_pushover(title:str,content:str):
+
+async def send_pushover(title: str, content: str):
     """发送pushover通知"""
     url = "https://api.pushover.net/1/messages.json"
     json = {"token": pushover_config.token,
-            "user":pushover_config.user_key,
+            "user": pushover_config.user_key,
             "title": title,
             "message": content
             }
 
     r = await AsHttpReq.post(url, json=json)
     if r.status_code == 200:
-        r_json:dict = r.json()
+        r_json: dict = r.json()
         if r_json["status"] == 1 and (r_json.get("info") is None):
             logger.info("pushover通知成功!")
         else:
             err = f"pushover通知失败，res:{r.text}"
             return err
 
-    return
+    return None

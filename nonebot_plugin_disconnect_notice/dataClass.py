@@ -46,6 +46,20 @@ class ServerConfig:
         else:
             return False
 
+# https://sct.ftqq.com/
+class Server3Config:
+    def __init__(self,
+                 key: str
+                 ):
+        self.key = key
+
+    def check_params(self) -> bool:
+        """检查参数是否填写完整"""
+        if self.key:
+            return True
+        else:
+            return False
+
 # https://pushover.net/api#messages
 class PushOverConfig:
     def __init__(self,
