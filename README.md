@@ -28,7 +28,9 @@ _✨ bot断连时的通知插件，支持多种通知方式 ✨_
     - [pushplus](https://www.pushplus.plus/)微信公众号通知;
     - [server酱Turbo](https://sct.ftqq.com/r/1483)(方糖)微信公众号通知;
     - [server酱3](https://sc3.ft07.com/)安卓/ios app离线通知;
-    - [pushover](https://pushover.net/)安卓/ios/ipad/pc多设备通知; emil邮件通知
+    - [pushover](https://pushover.net/)安卓/ios/ipad/pc多设备通知; emil邮件通知;
+    - 飞书 群聊bot通过webhook模式通知;
+    - emil邮件通知;
 - 如果有其他通知方式的需求，欢迎提issues或pr
 
 ## 💿 安装
@@ -275,9 +277,23 @@ disconnect_notice_max_grace_time = 10 #断连后最大宽限时长，单位:秒�
 </details>
 
 <details>
+<summary>server酱3app通知</summary>
+
+- ![server3-1.png](images/server3/server3-1.png)
+- ![server3-2.png](images/server3/server3-2.png)
+
+</details>
+
+<details>
 <summary>pushover通知</summary>
 
 ![pushover.png](images/pushover/pushover.png)
+</details>
+
+<details>
+<summary>飞书通知</summary>
+
+![feishu.png](images/feishu/feishu.png)
 </details>
 
 ## ✨喜欢的话就点个star✨吧，球球了QAQ

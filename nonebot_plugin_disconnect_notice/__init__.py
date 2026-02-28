@@ -14,8 +14,8 @@ from nonebot.permission import SUPERUSER
 
 from .config import driver, plugin_config, global_config, Config
 from .dataClass import BotParams
-from .notice import send_notice, mail_config, send_mail, server_config, pushplus_config
-from .utils import PLATFORM_SERVER, PLATFORM_MAIL, PLATFORM_PUSHPLUS,PLATFORM_PUSHOVER
+from .notice import send_notice, notice_context
+from .utils import PLATFORM_SERVER, PLATFORM_MAIL, PLATFORM_PUSHPLUS, PLATFORM_PUSHOVER, PLATFORM_SERVER3, PLATFORM_FEISHU
 
 require("nonebot_plugin_apscheduler")
 from nonebot_plugin_apscheduler import scheduler
@@ -43,10 +43,15 @@ async def _(matcher: Matcher):
     """主动触发掉线通知测试"""
     msg = "已发送测试通知\n"
     mode_list = plugin_config.disconnect_notice_mode_list
-    if PLATFORM_MAIL in mode_list:
-        msg += "\n当前通知渠道包括mail，若邮件未收到时请检查邮件垃圾箱"
-    if PLATFORM_PUSHOVER in mode_list:
-        msg += "\n当前通知渠道包括pushover，若未收到通知时，请检查是否有任一平台(安卓/ios/ipad/pc/mac)的app保持了后台运行且打开了系统通知"
+    # 使用策略模式检查各平台的配置
+    for platform in mode_list:
+        strategy = notice_context.get_strategy(platform)
+        if strategy and strategy.check_params():
+            if platform == PLATFORM_MAIL:
+                msg += "\n当前通知渠道包括mail，若邮件未收到时请检查邮件垃圾箱"
+            elif platform == PLATFORM_PUSHOVER:
+                msg += "\n当前通知渠道包括pushover，若未收到通知时，请检查是否有任一平台(安卓/ios/ipad/pc/mac)的app保持了后台运行且打开了系统通知"
+    
     bot_params = BotParams(
         adapter_name="114514",
         bot_id="114514"
@@ -129,25 +134,15 @@ async def connect(bot: Bot):
     """bot接入时检测配置完整性"""
     if isinstance(bot, V11Bot):
         mode_list = plugin_config.disconnect_notice_mode_list
-        mode_name = ""
-        params_ok = False
-        if PLATFORM_PUSHPLUS in mode_list:
-            mode_name = PLATFORM_PUSHPLUS
-            params_ok = pushplus_config.check_params()
-        if PLATFORM_MAIL in mode_list:
-            mode_name = PLATFORM_MAIL
-            params_ok = mail_config.check_params()
-        if PLATFORM_SERVER in mode_list:
-            mode_name = PLATFORM_SERVER
-            params_ok = server_config.check_params()
-        if PLATFORM_PUSHOVER in mode_list:
-            mode_name = PLATFORM_PUSHOVER
-            params_ok = server_config.check_params()
-        if not params_ok:
-            # 缺少参数,私聊通知主人
-            super_user: str = list(global_config.superusers)[0]
-            if super_user:
-                msg = f"【插件nonebot-plugin-disconnect-notice】\n缺少{mode_name}配置项，请按照" \
-                      "https://github.com/Cypas/nonebot_plugin_disconnect_notice#%EF%B8%8F-%E9%85%8D%E7%BD%AE" \
-                      "\n添加配置项后，再重新载入插件"
-                await bot.send_private_msg(user_id=int(super_user), message=msg)
+        # 使用策略模式检查所有平台的配置
+        for platform in mode_list:
+            strategy = notice_context.get_strategy(platform)
+            if strategy and not strategy.check_params():
+                # 缺少参数,私聊通知主人
+                super_user: str = list(global_config.superusers)[0]
+                if super_user:
+                    msg = f"【插件nonebot-plugin-disconnect-notice】\n缺少{platform}配置项，请按照" \
+                          "https://github.com/Cypas/nonebot_plugin_disconnect_notice#%EF%B8%8F-%E9%85%8D%E7%BD%AE" \
+                          "\n添加配置项后，再重新载入插件"
+                    await bot.send_private_msg(user_id=int(super_user), message=msg)
+                    break
