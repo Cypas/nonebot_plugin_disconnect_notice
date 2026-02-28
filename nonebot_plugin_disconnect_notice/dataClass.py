@@ -18,6 +18,7 @@ class MailConfig:
         else:
             return False
 
+
 # https://www.pushplus.plus/doc/
 class PushPlusConfig:
     def __init__(self,
@@ -31,6 +32,28 @@ class PushPlusConfig:
             return True
         else:
             return False
+
+
+# https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot?f_link_type=f_linkinlinenote&flow_extra=eyJpbmxpbmVfZGlzcGxheV9wb3NpdGlvbiI6MCwiZG9jX3Bvc2l0aW9uIjowLCJkb2NfaWQiOiJiNGU5MmI3OGM2NDBkYzk5LTIzNmNkY2VmNmQ1NGFmOTYifQ%3D%3D&lang=zh-CN
+class FeiShuConfig:
+    def __init__(self,
+                 webhook_url: str,
+                 secret=""
+                 ):
+        self.webhook_url = webhook_url
+        self.secret = secret
+
+    def check_params(self) -> bool:
+        """检查参数是否填写完整"""
+        if self.webhook_url:
+            return True
+        else:
+            return False
+
+    def is_have_secret(self):
+        """是否使用了请求鉴权"""
+        return self.secret
+
 
 # https://sct.ftqq.com/
 class ServerConfig:
@@ -46,6 +69,7 @@ class ServerConfig:
         else:
             return False
 
+
 # https://sct.ftqq.com/
 class Server3Config:
     def __init__(self,
@@ -59,6 +83,7 @@ class Server3Config:
             return True
         else:
             return False
+
 
 # https://pushover.net/api#messages
 class PushOverConfig:
@@ -76,13 +101,13 @@ class PushOverConfig:
         else:
             return False
 
+
 class BotParams:
     def __init__(self,
                  adapter_name: str,
                  bot_id: str,
-                 tag:str=None,
+                 tag: str = None,
                  ):
         self.adapter_name = adapter_name
         self.bot_id = bot_id
         self.tag = tag
-

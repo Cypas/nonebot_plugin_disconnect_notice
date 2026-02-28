@@ -96,8 +96,8 @@ _✨ bot断连时的通知插件，支持多种通知方式 ✨_
     - ![1.png](images/server3/1.png)
 5. 将token按照下方配置项名 disconnect_notice_server3_key = "" 填入`.env.prod` 文件内
 6. 访问[app下载页面](https://sc3.ft07.com/client)从支持机型的应用商店下载，或直接下载apk
-   - 你也可以通过手机扫描下面二维码进入下载页面
-   - ![3.png](images/server3/3.png)
+    - 你也可以通过手机扫描下面二维码进入下载页面
+    - ![3.png](images/server3/3.png)
 7. app端复制刚刚的sendkey，或扫码sendkey旁边二维码完成填写
 8. 后续app就能收到推送消息，下列品牌手机(iOS/FCM/小米/华为/荣耀/vivo/oppo/iQOO/Realme/OnePlus/魅族)
    ，即便应用不在后台，也能通过厂商通道收到推送消息
@@ -147,6 +147,18 @@ _✨ bot断连时的通知插件，支持多种通知方式 ✨_
 </details>
 
 <details>
+<summary>飞书webhook 消息配置教程</summary>
+
+1. 建议直接参考[飞书官网教程](https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot)注册机器人
+2. 将得到的地址按照下方配置项名 disconnect_notice_feishu_webhook_url = "" 填入
+   `.env.prod` 文件内
+3. 安全配置可选 自定义关键词、IP 白名单 和 签名 三种方式的校验，若选择了 `签名校验`，则还需要将配置项名
+   disconnect_notice_feishu_secret = "" 填入`.env.prod` 文件内
+4. 之后bot就可以发送通知消息
+
+</details>
+
+<details>
 <summary>邮件通知配置教程</summary>
 
 - 以qq邮箱为例，其他邮箱的开启smtp方式是类似的
@@ -181,21 +193,23 @@ _✨ bot断连时的通知插件，支持多种通知方式 ✨_
 
 </details>
 
-|                 配置项                 | 必填 |    值类型    |    默认值     |                                      说明                                       |
-|:-----------------------------------:|:--:|:---------:|:----------:|:-----------------------------------------------------------------------------:|
-|     disconnect_notice_mode_list     | 是  | list[str] | ["server"] | 通知类型列表，枚举值: mail server server3 pushplus pushover，可填写多个通知源，如["server"，"mail"] |
-|  disconnect_notice_pushplus_token   | 是  |    str    |     ""     |                        pushplus微信公众号token，具体获取方式见上方教程                         |
-|    disconnect_notice_server_key     | 是  |    str    |     ""     |                       server酱Turbo微信公众号key，具体获取方式见上方教程                        |
-|    disconnect_notice_server3_key    | 是  |    str    |     ""     |                            server酱3key，具体获取方式见上方教程                            |
-| disconnect_notice_pushover_user_key | 是  |    str    |     ""     |                         pushover user_key，具体获取方式见上方教程                         |
-|  disconnect_notice_pushover_token   | 是  |    str    |     ""     |                          pushover token，具体获取方式见上方教程                           |
-|     disconnect_notice_smtp_user     | 是  |    str    |     ""     |                            邮箱账号,如 114514@yeah.net                             |
-|   disconnect_notice_smtp_password   | 是  |    str    |     ""     |                               邮箱密码或授权码,如 114514                               |
-|    disconnect_notice_smtp_server    | 是  |    str    |     ""     |                            邮箱服务器地址,如 smtp.yeah.net                            |
-|     disconnect_notice_smtp_port     | 是  |    int    |    465     |                               邮箱端口号，ssl模式时为465                                |
-|   disconnect_notice_notice_email    | 是  |    str    |     ""     |                                收件人邮箱，填写自己邮箱即可                                 |
-|     disconnect_notice_dev_mode      | 否  |   bool    |   False    |               开发者模式，该模式下bot断开连接不会触发通知消息，避免本地测试插件时不断重载而导致的大量掉线通知               |
-|  disconnect_notice_max_grace_time   | 否  |    int    |     10     |                    断连后最大宽限时长，单位:秒，如果在此期间bot完成了重连，则不触发邮件通知                     |
+|                 配置项                  | 必填 |    值类型    |    默认值     |                                      说明                                       |
+|:------------------------------------:|:--:|:---------:|:----------:|:-----------------------------------------------------------------------------:|
+|     disconnect_notice_mode_list      | 是  | list[str] | ["server"] | 通知类型列表，枚举值: mail server server3 pushplus pushover，可填写多个通知源，如["server"，"mail"] |
+|   disconnect_notice_pushplus_token   | 是  |    str    |     ""     |                        pushplus微信公众号token，具体获取方式见上方教程                         |
+|     disconnect_notice_server_key     | 是  |    str    |     ""     |                       server酱Turbo微信公众号key，具体获取方式见上方教程                        |
+|    disconnect_notice_server3_key     | 是  |    str    |     ""     |                            server酱3key，具体获取方式见上方教程                            |
+| disconnect_notice_pushover_user_key  | 是  |    str    |     ""     |                         pushover user_key，具体获取方式见上方教程                         |
+|   disconnect_notice_pushover_token   | 是  |    str    |     ""     |                          pushover token，具体获取方式见上方教程                           |
+| disconnect_notice_feishu_webhook_url | 是  |    str    |     ""     |                    飞书 web_hook地址，需要添加https://头，具体获取方式见上方教程                    |
+|   disconnect_notice_feishu_secret    | 否  |    str    |     ""     |                    飞书 签名密钥，只有在选择了签名校验时才需要填写这个值，具体获取方式见上方教程                    |
+|     disconnect_notice_smtp_user      | 是  |    str    |     ""     |                            邮箱账号,如 114514@yeah.net                             |
+|   disconnect_notice_smtp_password    | 是  |    str    |     ""     |                               邮箱密码或授权码,如 114514                               |
+|    disconnect_notice_smtp_server     | 是  |    str    |     ""     |                            邮箱服务器地址,如 smtp.yeah.net                            |
+|     disconnect_notice_smtp_port      | 是  |    int    |    465     |                               邮箱端口号，ssl模式时为465                                |
+|    disconnect_notice_notice_email    | 是  |    str    |     ""     |                                收件人邮箱，填写自己邮箱即可                                 |
+|      disconnect_notice_dev_mode      | 否  |   bool    |   False    |               开发者模式，该模式下bot断开连接不会触发通知消息，避免本地测试插件时不断重载而导致的大量掉线通知               |
+|   disconnect_notice_max_grace_time   | 否  |    int    |     10     |                    断连后最大宽限时长，单位:秒，如果在此期间bot完成了重连，则不触发邮件通知                     |
 
 <details>
 <summary>示例配置</summary>
@@ -213,6 +227,9 @@ disconnect_notice_server3_key = ""
 # pushover
 disconnect_notice_pushover_user_key = ""
 disconnect_notice_pushover_token = ""
+# feishu
+disconnect_notice_feishu_webhook_url = ""
+disconnect_notice_feishu_secret = ""
 # 邮件通知
 disconnect_notice_smtp_user = "114514@yeah.net" #邮箱账号
 disconnect_notice_smtp_password = "114514" #邮箱密码

@@ -1,15 +1,20 @@
+import base64
+import hashlib
+import hmac
 import re
 
 import httpx
 from httpx import Response
 
-HTTP_TIME_OUT = 10 # 请求超时，秒
+HTTP_TIME_OUT = 10  # 请求超时，秒
 
 PLATFORM_PUSHPLUS = "pushplus"
 PLATFORM_MAIL = "mail"
 PLATFORM_SERVER = "server"
 PLATFORM_SERVER3 = "server3"
 PLATFORM_PUSHOVER = "pushover"
+PLATFORM_FEISHU = "feishu"
+
 
 class AsHttpReq(object):
     """httpx 异步请求封装"""
@@ -53,3 +58,13 @@ async def sc_send(sendkey, title, desp='', options=None):
     }
     response = await AsHttpReq.post(url, json=params, headers=headers)
     return response
+
+
+def feishu_gen_sign(timestamp, secret):
+    """飞书生成加密校验"""
+    # 拼接timestamp和secret
+    string_to_sign = '{}\n{}'.format(timestamp, secret)
+    hmac_code = hmac.new(string_to_sign.encode("utf-8"), digestmod=hashlib.sha256).digest()
+    # 对结果进行base64处理
+    sign = base64.b64encode(hmac_code).decode('utf-8')
+    return sign

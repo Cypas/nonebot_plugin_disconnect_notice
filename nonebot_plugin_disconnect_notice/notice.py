@@ -1,3 +1,4 @@
+import time
 from email.header import Header
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -7,7 +8,7 @@ import aiosmtplib
 
 from nonebot import logger, Bot
 from .config import plugin_config
-from .dataClass import MailConfig, BotParams, PushPlusConfig, ServerConfig, PushOverConfig, Server3Config
+from .dataClass import MailConfig, BotParams, PushPlusConfig, ServerConfig, PushOverConfig, Server3Config, FeiShuConfig
 from .utils import *
 
 mail_config: MailConfig = MailConfig(
@@ -35,6 +36,11 @@ pushover_config: PushOverConfig = PushOverConfig(
     token=plugin_config.disconnect_notice_pushover_token
 )
 
+feishu_config: FeiShuConfig = FeiShuConfig(
+    webhook_url=plugin_config.disconnect_notice_feishu_webhook_url,
+    secret=plugin_config.disconnect_notice_feishu_secret,
+)
+
 
 def check_params(platform: str) -> Optional[str]:
     """多平台检查配置参数完整性"""
@@ -55,6 +61,9 @@ def check_params(platform: str) -> Optional[str]:
             return err.format(platform=platform)
     elif platform == PLATFORM_PUSHOVER:
         if not pushover_config.check_params():
+            return err.format(platform=platform)
+    elif platform == PLATFORM_FEISHU:
+        if not feishu_config.check_params():
             return err.format(platform=platform)
     return None
 
@@ -122,6 +131,16 @@ async def send_notice(bot_params: BotParams, test=False):
         err = check_params(platform)
         if not err:
             err = await send_pushover(title, content)
+        if err:
+            logger.error(err)
+
+    # feishu
+    if PLATFORM_FEISHU in mode_list:
+        platform = PLATFORM_FEISHU
+        # 参数校验
+        err = check_params(platform)
+        if not err:
+            err = await send_feishu(title, content)
         if err:
             logger.error(err)
     return err
@@ -241,4 +260,38 @@ async def send_pushover(title: str, content: str):
             err = f"pushover通知失败，res:{r.text}"
             return err
 
+    return None
+
+
+async def send_feishu(title: str, content: str):
+    """发送飞书 webhook通知"""
+    webhook_url = feishu_config.webhook_url
+    secret = feishu_config.is_have_secret()
+    body = {
+        "msg_type": "text",
+        "content": {
+            "text": f"{title}\n{content}"
+        }
+    }
+    if secret:
+        # 若使用了请求加密
+        timestamp = str(int(time.time()))
+        sign = feishu_gen_sign(timestamp, secret)
+        body["timestamp"] = timestamp
+        body["sign"] = sign
+    try:
+        r = await AsHttpReq.post(webhook_url, json=body)
+        if r.status_code == 200:
+            r_json = r.json()
+            if r_json["code"] == 0:
+                logger.info("飞书通知成功!")
+            else:
+                err = f"飞书通知失败，res:{r.text}"
+                return err
+    except (httpx.ConnectError, httpx.ConnectTimeout):
+        err = f"飞书通知失败，bot服务器网络错误"
+        return err
+    except Exception as e:
+        err = f"飞书通知失败，错误信息如下{e}"
+        return err
     return None
